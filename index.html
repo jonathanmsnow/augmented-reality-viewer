@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Mini AR Viewer</title>
+    <title>Mini AR Viewer with Upload + URL</title>
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
     <style>
@@ -17,7 +17,7 @@
         top: 0;
         left: 0;
         width: 100%;
-        z-index: 10; /* Keep on top of video and canvas */
+        z-index: 10;
         background-color: rgba(0, 0, 0, 0.85);
         color: white;
         padding: 1em;
@@ -29,13 +29,27 @@
         font-size: 1.25em;
       }
 
+      #controls {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1em;
+        margin-top: 0.5em;
+      }
+
+      #controls input[type="file"],
+      #controls input[type="text"],
+      #controls button {
+        font-size: 1em;
+        padding: 0.4em;
+      }
+
       a-scene {
         width: 100%;
         height: 100vh;
         display: block;
       }
 
-      /* Optional: ensure AR video is behind UI */
       video#arjs-video {
         z-index: -1;
         position: absolute;
@@ -45,10 +59,14 @@
     </style>
   </head>
   <body>
-    <!-- Upload UI -->
+    <!-- Upload + URL input UI -->
     <div id="upload-bar">
-      <h2>Upload your 3D model</h2>
-      <input type="file" id="modelUpload" accept=".glb,.gltf" />
+      <h2>Load your 3D model (.glb/.gltf)</h2>
+      <div id="controls">
+        <input type="file" id="modelUpload" accept=".glb,.gltf" />
+        <input type="text" id="urlInput" placeholder="Paste model URL..." size="40" />
+        <button id="loadBtn">Load from URL</button>
+      </div>
     </div>
 
     <!-- AR scene -->
@@ -64,21 +82,16 @@
       <a-entity camera></a-entity>
     </a-scene>
 
-    <!-- Script to handle uploads -->
     <script>
-      const scene = document.querySelector('a-scene');
-      const modelEl = document.getElementById('model');
 
-      scene.addEventListener('loaded', () => {
-        const uploader = document.getElementById('modelUpload');
-        uploader.addEventListener('change', (event) => {
-          const file = event.target.files[0];
-          if (!file) return;
+    const uploader = document.getElementById('modelUpload');
+    uploader.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
 
-          const url = URL.createObjectURL(file);
-          modelEl.setAttribute('gltf-model', url);
-        });
-      });
+        const url = URL.createObjectURL(file);
+        modelEl.setAttribute('gltf-model', url);
+    });
     </script>
   </body>
 </html>
