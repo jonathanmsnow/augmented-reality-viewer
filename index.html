@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Mini AR Viewer</title>
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <script src="https://cdn.rawgit.com/jeromeetienne/ar.js/2.2.1/aframe/build/aframe-ar.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+        font-family: sans-serif;
+        background-color: #f0f0f0;
+      }
+
+      #upload-bar {
+        background-color: rgba(0, 0, 0, 0.8); /* opaque dark background */
+        color: white;
+        padding: 1em;
+        text-align: center;
+      }
+
+      #upload-bar h2 {
+        margin: 0 0 0.5em;
+        font-size: 1.25em;
+      }
+
+      a-scene {
+        height: 300px;
+        width: 400px;
+        display: block;
+        margin: 1em auto;
+      }
+
+      #arjs-video {
+        height: 300px;
+        width: 400px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Opaque upload bar -->
+    <div id="upload-bar">
+      <h2>Upload your 3D model</h2>
+      <input type="file" id="modelUpload" accept=".glb,.gltf" />
+    </div>
+
+    <!-- AR scene -->
+    <a-scene
+      embedded
+      arjs
+      vr-mode-ui="enabled: false"
+      renderer="logarithmicDepthBuffer: true;"
+    >
+      <a-marker preset="barcode" value="6">
+        <a-entity
+          id="model"
+          scale="0.5 0.5 0.5"
+          position="0 0 0"
+        ></a-entity>
+      </a-marker>
+      <a-entity camera></a-entity>
+    </a-scene>
+
+    <script>
+      document.getElementById('modelUpload').addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const url = URL.createObjectURL(file);
+        const modelEl = document.getElementById('model');
+        modelEl.setAttribute('gltf-model', url);
+      });
+    </script>
+  </body>
+</html>
